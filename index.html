@@ -3,9 +3,44 @@
 		<title>handlebars test</title>
 	</head>
 	<body>
-		{{#list people}}{{firstName}} {{lastName}}{{/list}}
-		<!--This sets the baseUrl to the "js" directory, and
-	    loads a script that will have a module ID of 'main'-->
-		<script data-main="js/app.js" src="js/require.js"></script>
+		<script id="some-template" type="text/x-handlebars-template">
+			<table>
+				<thead>
+					<th>Username</th>
+					<th>Real Name</th>
+					<th>Email</th>
+				</thead>
+				<tbody>
+					{{#each users}}
+						{{> user}}
+					{{/each}}
+				</tbody>
+			</table>
+		</script>
+
+		<script id="user-partial" type="text/x-handlebars-template">
+			<tr>
+				<td{{#if @first}} style="color:green;" {{/if}}>{{username}}</td>
+				<td>{{firstName}} {{lastName}}</td>
+				<td{{#if @last}} style="color:red;" {{/if}}>{{email}}</td>
+			</tr>
+		</script>
+		
+		<div id="content-placeholder"></div>
+		<script src="js/handlebars.js"></script>
+		<script src="js/jquery.js"></script>
+		<script type="text/javascript">
+		var source   = $("#some-template").html();
+		var template = Handlebars.compile(source);
+
+    	Handlebars.registerPartial("user", $("#user-partial").html());
+
+		var data = { users: [
+		{username: "alan", firstName: "Alan", lastName: "Johnson", email: "alan@test.com" },
+		{username: "allison", firstName: "Allison", lastName: "House", email: "allison@test.com" },
+		{username: "ryan", firstName: "Ryan", lastName: "Carson", email: "ryan@test.com" }
+		]};
+		$("#content-placeholder").html(template(data));
+		</script>
 	</body>
 </html>
